@@ -1,0 +1,206 @@
+openapi: 3.0.3
+info:
+  title: Title
+  description: Title
+  version: 1.0.0
+servers:
+  - url: 'https'
+paths:
+  /members:
+    get:
+      summary: List all members
+      operationId: listMembers
+      tags:
+        - members
+      parameters:
+        - name: limit
+          in: query
+          description: How many items to return at one time (max 100)
+          required: false
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: A paged array of members
+          headers:
+            x-next:
+              type: string
+              description: A link to the next page of responses
+          schema:
+            $ref: '#/definitions/Members'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Create a member
+      operationId: createMembers
+      tags:
+        - members
+      responses:
+        "201":
+          description: Null response
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /members/{memberId}:
+    get:
+      summary: Info for a specific member
+      operationId: showMemberById
+      tags:
+        - members
+      parameters:
+        - name: memberId
+          in: path
+          required: true
+          description: The id of the member to retrieve
+          type: string
+      responses:
+        "200":
+          description: Expected response to a valid request
+          schema:
+            $ref: '#/definitions/Members'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /groups:
+    get:
+      summary: List all groups
+      operationId: listGroups
+      tags:
+        - groups
+      parameters:
+        - name: limit
+          in: query
+          description: How many items to return at one time (max 100)
+          required: false
+          type: integer
+          format: int32
+      responses:
+        "200":
+          description: A paged array of groups
+          headers:
+            x-next:
+              type: string
+              description: A link to the next page of responses
+          schema:
+            $ref: '#/definitions/Groups'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+    post:
+      summary: Create a group
+      operationId: createGroups
+      tags:
+        - groups
+      responses:
+        "201":
+          description: Null response
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /groups/{groupId}:
+    get:
+      summary: Info for a specific group
+      operationId: showGroupById
+      tags:
+        - groups
+      parameters:
+        - name: groupId
+          in: path
+          required: true
+          description: The id of the group to retrieve
+          type: string
+      responses:
+        "200":
+          description: Expected response to a valid request
+          schema:
+            $ref: '#/definitions/Groups'
+        default:
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  
+
+
+definitions:
+  Member:
+    type: "object"
+    required:
+      - id
+      - name
+      - role
+      - credentialsNonExpired
+      - accountNonExpired
+      - username
+      - passwordChanged
+      - accountNonLocked
+      - password
+      - email
+      - enabled
+    properties:
+      id:
+        type: int
+      name:
+        type: string
+      role:
+        type: string
+      credentialsNonExpired:
+        type: boolean
+      accountNonExpired:
+        type: boolean
+      username:
+        type: string
+      passwordChanged:
+        type: boolean
+      accountNonLocked:
+        type: boolean
+      password:
+        type: string
+      email:
+        type: string
+      enabled:
+        type: boolean
+  Members:
+    type: array
+    items:
+      $ref: '#/definitions/Member'
+  Group:
+    type: "object"
+    required:
+      - id
+      - name
+      - size
+      - maxStudents
+      - changeInterval
+    properties:
+      id:
+        type: int
+      name:
+        type: string
+      size:
+        type: int
+      maxStudents:
+        type: int
+      changeInterval:
+        type: string
+  Groups:
+    type: array
+    items:
+      $ref: '#/definitions/Group'
+
+  Error:
+    type: "object"
+    required:
+      - code
+      - message
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
